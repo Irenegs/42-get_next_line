@@ -1,59 +1,77 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_buf.c                                    :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: irgonzal <irgonzal@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:50:44 by irgonzal          #+#    #+#             */
-/*   Updated: 2022/11/07 15:59:27 by irgonzal         ###   ########.fr       */
+/*   Updated: 2022/11/10 12:30:32 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #	include "get_next_line.h"
-#include "libft.h"
 #include <stdio.h>
-int	end_in_str(char *str)
+
+size_t	end_in_str(char *str)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (str[i] != '\0')
+	printf("end\n");
+	while (str[i] != '\0' && i < BUFFER_SIZE)
+	{
 		if (str[i] == '\n')
 			return (i);
 		i++;
+	}
+	printf("endend\n");
 	return (i);
 }
 
 char	*get_next_line(int fd)
 {
-	char			*aux;//
+	char			*aux;
 	char			*line;
 	static char		*buf = "\0";
 	size_t			size;
 
-	buf = malloc(BUFFER_SIZE * sizeof(char));
-	printf("gnl, %d", BUFFER_SIZE);
+	printf("hola\n");
+	if (ft_strlen(buf) == 0)
+	{
+		printf("buf malloc\n");
+		buf = malloc(BUFFER_SIZE * sizeof(char));
+		if (!buf)
+			return (NULL);
+		printf("buf malloc\n");
+		read(fd, buf, BUFFER_SIZE);
+		printf("buf read\n");
+	}
+	printf("buf reserved\n");
 	size = end_in_str(buf);
+	if (size == 0 && ft_strlen(buf) == 0)
+	{
+		printf("if2\n");
+		free(buf);
+		return (NULL);
+	}
+	line = "\0";
 	while (size == ft_strlen(buf) && ft_strlen(buf) == BUFFER_SIZE)
 	{
-		printf("bucle\n");
-		line = ft_strjoin(line, buf);
+		printf("bf append\n");
+		line = ft_strappendn(line, buf, BUFFER_SIZE);
+		printf("af append\n");
 		read(fd, buf, BUFFER_SIZE);
 		size = end_in_str(buf);
 	}
-	aux = ft_substr(buf, 0, size);
-	line = ft_strjoin(line, aux);
-	ft_memmove(line, aux, ft_strlen(aux));
-	buf = ft_substr(buf, size, ft_strlen(buf) - size);
-	free(aux);
+	line = ft_strappendn(line, buf, size);
+	buf = ft_substr(buf, size + 1, ft_strlen(buf) - size);
 	return (line);
 }
-
-
-
-
 /*	
+
+
+
 	buf = '\0';
 	size = end_in_str(rest);
 	if (size > -1)

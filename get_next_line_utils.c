@@ -6,15 +6,42 @@
 /*   By: irgonzal <irgonzal@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 15:29:53 by irgonzal          #+#    #+#             */
-/*   Updated: 2022/11/07 13:39:48 by irgonzal         ###   ########.fr       */
+/*   Updated: 2022/11/10 12:33:42 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #	include "get_next_line.h"
-
-int	ft_strlenint(const char *s)
+#include <stdio.h>
+char	*ft_strappendn(char *s1, char *s2, size_t n)
 {
-	int	i;
+	char	*res;
+	int		i;
+	int		size1;
+	printf("ap");
+	size1 = ft_strlen(s1);	
+	res = malloc((size1 + n + 1) * sizeof(char));
+	i = 0;
+	while (s1[i] != '\0')
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	i = 0;
+	while (i < n && s2[i] != '\0')
+	{
+		res[size1 + i] = s2[i];
+		i++;
+	}
+	res[i] = '\0';
+	printf("aqui");
+	free(s1);
+	return (res);
+}
+
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	i;
 
 	i = 0;
 	while (s[i] != '\0')
@@ -95,4 +122,25 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	if (sdst > dstsize)
 		return (ssum - sdst + dstsize);
 	return (ssum);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	unsigned int	l1;
+	unsigned int	len;
+	char			*str;
+
+	l1 = 0;
+	if (s1)
+		l1 = ft_strlen(s1);
+	len = l1;
+	if (s2)
+		len += ft_strlen(s2);
+	str = malloc((len + 1) * sizeof(char));
+	if (!str)
+		return (NULL);
+	ft_memmove(str, s1, l1);
+	ft_memmove(str + l1, s2, len - l1);
+	str[len] = '\0';
+	return (str);
 }
