@@ -16,11 +16,17 @@
 # include <stddef.h>
 # include <stdlib.h>
 
+#include <stdio.h>
+
+# ifndef BUFFER_SIZE
+# define BUFFER_SIZE 1
+# endif
+
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);
 void	*ft_memmove(void *dst, const void *src, size_t n);
-size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strappendn(char *s1, char *s2, size_t n);
+char	*ft_strdup(char *src);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 #endif
