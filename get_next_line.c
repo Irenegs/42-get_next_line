@@ -1,97 +1,87 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_buf.c                                    :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42madrid>       +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/27 12:50:44 by irgonzal          #+#    #+#             */
-/*   Updated: 2022/11/07 15:59:27 by irgonzal         ###   ########.fr       */
+/*   Created: 2023/01/23 17:48:33 by irgonzal          #+#    #+#             */
+/*   Updated: 2023/01/23 17:48:36 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #	include "get_next_line.h"
-#include "libft.h"
-#include <stdio.h>
-int	end_in_str(char *str)
+
+static size_t	contains_line(char *s)
 {
 	int	i;
 
 	i = 0;
-	while (str[i] != '\0')
-		if (str[i] == '\n')
-			return (i);
+	while (s[i] != '\0' && s[i] != '\n')
 		i++;
-	return (i);
+	if (s[i] == '\n')
+		return (i + 1);
+	return (0);
 }
 
-char	*get_next_line(int fd)
+char	*prepare_line(char *aux, size_t pos_nl)
 {
-	char			*aux;//
-	char			*line;
-	static char		*buf = "\0";
-	size_t			size;
+	char	*line;
 
-	buf = malloc(BUFFER_SIZE * sizeof(char));
-	printf("gnl, %d", BUFFER_SIZE);
-	size = end_in_str(buf);
-	while (size == ft_strlen(buf) && ft_strlen(buf) == BUFFER_SIZE)
-	{
-		printf("bucle\n");
-		line = ft_strjoin(line, buf);
-		read(fd, buf, BUFFER_SIZE);
-		size = end_in_str(buf);
-	}
-	aux = ft_substr(buf, 0, size);
-	line = ft_strjoin(line, aux);
-	ft_memmove(line, aux, ft_strlen(aux));
-	buf = ft_substr(buf, size, ft_strlen(buf) - size);
+	line = ft_substr(aux, 0, pos_nl);
 	free(aux);
 	return (line);
 }
 
+static char	*load_buffer(char *rem, int fd)
+{
+	char	*buffer;
+	char	*aux;
+	int		bytes;
 
-
-
-/*	
-	buf = '\0';
-	size = end_in_str(rest);
-	if (size > -1)
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buffer)
+		return (NULL);
+	bytes = read(fd, buffer, BUFFER_SIZE);
+	if (bytes == 0)
+		return ("\0");//demasiado drástico?
+	buffer[BUFFER_SIZE] = '\0';
+	//printf("buffer %s|\n", buffer);
+	if (rem[0] != '\0')
 	{
-		line = ft_substr(rest, 0, size);
-		rest = ft_substr(rest, size, ft_strlen(rest) - size);
+		aux = ft_strdup(rem);
+		free(rem);
 	}
 	else
-	{
-		aux = ft_substr(rest, 0, ft_strlen(rest));
-		buf = malloc(sizeof(char) * BUFFER_SIZE);
-		if (!buf)
-			return (NULL);
-		read(fd, buf, BUFFER_SIZE);
-		size = end_in_str(buf);
-		if (size > -1)
-		{
-			free(line);
-			line = malloc((ft_strlenint(aux) + BUFFER_SIZE) * sizeof(char));
-			ft_strlcat(line, buf, ft_strlenint(aux));
-			free(aux);
-			aux = ft_substr(line, 0, ft_strlen(line));
-		}
-		else
-		{
-			line = malloc((ft_strlen(rest) + ft_strlen(aux) + size + 1) * sizeof(char));
-			ft_memmove(line, rest, ft_strlen(rest));
-			ft_strlcat(line, aux, ft_strlen(rest) + ft_strlen(aux));
-			ft_strlcat(line, buf, ft_strlen(rest) + ft_strlen(aux) + size + 1);
-			ft_memmove(rest, buf, 
-		}
-	}
-	return (line);
+		aux = "\0";
+	rem = ft_strjoin(aux, buffer);
+	if (aux[0] != '\0')
+		free(aux);
+	free(buffer);
+	return (rem);
+}
 
+char	*get_next_line(int fd)
+{
+	static char	*remains = "\0";
+	char		*aux;
+	size_t		pos_nl;
 
-	buf = malloc(sizeof(char) * BUFFER_SIZE);
-	if (!buf)
+	if (remains[0] == '\0')
+		remains = load_buffer(remains, fd);
+	if (!remains || remains[0] == '\0')
 		return (NULL);
-	read(fd, buf, BUFFER_SIZE);
-	to_copy(buf, aux,  
-}*/
+	while (contains_line(remains) == 0 && ft_strlen(remains) != 0)
+	{
+		remains = load_buffer(remains, fd);
+		if (!remains || remains[0] == '\0')
+			return (NULL);
+	}
+	aux = ft_strdup(remains);
+	if (!aux)
+		return (NULL);
+	pos_nl = contains_line(aux);
+	free(remains);
+	remains = ft_substr(aux, pos_nl, ft_strlen(aux) - pos_nl);
+	return (prepare_line(aux, pos_nl));
+}
