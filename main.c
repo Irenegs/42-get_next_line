@@ -31,4 +31,5 @@ int	main(void)
 	print_file("file2");
 	printf("file3\n");
 	print_file("file3");*/
+	system("leaks a.out");
 }
