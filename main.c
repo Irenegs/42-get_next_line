@@ -2,34 +2,37 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-void print_file(char *file_name)
+void print_file(int openfile)
 {
 	char *line;
-	int	i=0;
-	int openfile;
-	
-	openfile = open(file_name, O_RDONLY);
+
 	line = get_next_line(openfile);
-	while (line != NULL && i < 10)	
+	printf("\nLet's begin\n");
+	while (line != NULL)
 	{
-		printf("LINE: %s", line);
+		printf("[%s]", line);
 		free(line);
 		line = get_next_line(openfile);
-		i++;
 	}
-	close(openfile);
+	free(line);
 }
 
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	printf("file\n");
-	print_file("file");
-	/*printf("file1\n");
-	print_file("file1");
-	printf("file2\n");
-	print_file("file2");
-	printf("file3\n");
-	print_file("file3");*/
-	system("leaks a.out");
+	int openfile;
+
+	if (argc > 1)
+	{
+		char *file = argv[1];
+		openfile = open(file, O_RDONLY);
+	}
+	else
+	{
+		openfile = 0;
+	}
+	print_file(openfile);
+	if (openfile != 0){
+	close(openfile);}
+	return 0;
 }

@@ -27,6 +27,5 @@ size_t	ft_strlen(const char *s);
 void	*ft_memmove(void *dst, const void *src, size_t n);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strdup(char *src);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*add_string(char *s1, char *s2);
 #endif

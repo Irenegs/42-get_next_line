@@ -43,26 +43,6 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strdup(char *src)
-{
-	unsigned int	i;
-	unsigned int	len;
-	char			*p;
-
-	len = ft_strlen(src);
-	p = malloc((len + 1) * sizeof(char));
-	if (!p)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		*(p + i) = *(src + i);
-		i++;
-	}
-	*(p + i) = '\0';
-	return (p);
-}
-
 void	*ft_memmove(void *dst, const void *src, size_t n)
 {
 	size_t		i;
@@ -115,3 +95,25 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	p[i] = '\0';
 	return (p);
 }
+/*
+
+char	*ft_strdup(char *src)
+{
+	unsigned int	i;
+	unsigned int	len;
+	char			*p;
+
+	len = ft_strlen(src);
+	p = malloc((len + 1) * sizeof(char));
+	if (!p)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		*(p + i) = *(src + i);
+		i++;
+	}
+	*(p + i) = '\0';
+	return (p);
+}
+*/
