@@ -15,11 +15,10 @@
 # include <unistd.h>
 # include <stddef.h>
 # include <stdlib.h>
-
-#include <stdio.h>
+# include <stdio.h>
 
 # ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1
+#  define BUFFER_SIZE 1
 # endif
 
 char	*get_next_line(int fd);
