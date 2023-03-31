@@ -12,11 +12,11 @@
 
 #	include "get_next_line_bonus.h"
 
-static size_t	find_br(char *s)
+static size_t	find_br(char *s, int index)
 {
 	int	i;
 
-	i = 0;
+	i = index;
 	while (s[i] != '\0' && s[i] != '\n')
 		i++;
 	return (i);
@@ -33,7 +33,6 @@ ssize_t	read_line(char **rem, int fd)
 	if (bytes >= 0)
 	{
 		buffer[bytes] = '\0';
-		//printf("\n[%s]\n", buffer);
 		line = ft_strjoin(*rem, buffer);
 		free(*rem);
 		*rem = line;
@@ -46,7 +45,7 @@ void	prepare_line(char *array[], char *rem)
 {
 	size_t	br;
 
-	br = find_br(rem);
+	br = find_br(rem, 0);
 	if (!rem || rem[0] == '\0')
 	{
 		array[0] = NULL;
@@ -70,22 +69,24 @@ char	*get_next_line(int fd)
 	char		*array[2];
 	ssize_t		bytes;
 	char		*rem;
+	int			index;
 
 	if (fd < 0 || fd > FOPEN_MAX)
 		return (NULL);
 	rem = cache[fd];
-	if (!rem || rem[find_br(rem)] != '\n')
+	index = ft_strlen(rem);
+	if (!rem || rem[find_br(rem, 0)] != '\n')
 	{
 		bytes = read_line(&rem, fd);
-		while (bytes > 0 && rem[find_br(rem)] != '\n')
+		while (bytes > 0 && rem[find_br(rem, index)] != '\n')
 		{
+			index += bytes;
 			bytes = read_line(&rem, fd);
 		}
 		if (bytes < 0)
 		{
 			free(rem);
-			cache[fd] = NULL;
-			return (NULL);
+			return (cache[fd] = NULL);
 		}
 	}
 	prepare_line(array, rem);
