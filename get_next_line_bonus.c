@@ -30,7 +30,7 @@ ssize_t	read_line(char **rem, int fd)
 
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	bytes = read(fd, buffer, BUFFER_SIZE);
-	if (bytes >= 0)
+	if (bytes > 0)
 	{
 		buffer[bytes] = '\0';
 		line = ft_strjoin(*rem, buffer);
@@ -44,22 +44,25 @@ ssize_t	read_line(char **rem, int fd)
 void	prepare_line(char *array[], char *rem)
 {
 	size_t	br;
+	size_t	len;
 
-	br = find_br(rem, 0);
-	if (!rem || rem[0] == '\0')
+	array[0] = NULL;
+	array[1] = NULL;
+	if (rem)
 	{
-		array[0] = NULL;
-		array[1] = NULL;
-	}
-	else if (rem[br] != '\n')
-	{
-		array[0] = ft_substr(rem, 0, ft_strlen(rem));
-		array[1] = NULL;
-	}
-	else
-	{
-		array[0] = ft_substr(rem, 0, br + 1);
-		array[1] = ft_substr(rem, br + 1, ft_strlen(rem) - br);
+		if (rem[0] == '\0')
+			free(rem);
+		else
+		{
+			array[0] = rem;
+			br = find_br(rem, 0);
+			if (rem[br] == '\n')
+			{
+				len = ft_strlen(rem);
+				array[1] = ft_substr(rem, br + 1, len - br);
+				array[0][br + 1] = '\0';
+			}
+		}
 	}
 }
 
@@ -78,7 +81,7 @@ char	*get_next_line(int fd)
 	if (!rem || rem[find_br(rem, 0)] != '\n')
 	{
 		bytes = read_line(&rem, fd);
-		while (bytes > 0 && rem[find_br(rem, index)] != '\n')
+		while (bytes == BUFFER_SIZE && rem[find_br(rem, index)] != '\n')
 		{
 			index += bytes;
 			bytes = read_line(&rem, fd);
@@ -90,7 +93,6 @@ char	*get_next_line(int fd)
 		}
 	}
 	prepare_line(array, rem);
-	free(rem);
 	cache[fd] = array[1];
 	return (array[0]);
 }
