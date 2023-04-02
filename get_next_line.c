@@ -69,7 +69,7 @@ char	*get_next_line(int fd)
 	char		*array[2];
 	ssize_t		bytes;
 
-	if (fd < 0)
+	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE < 1)
 		return (NULL);
 	if (!rem || rem[find_br(rem)] != '\n')
 	{

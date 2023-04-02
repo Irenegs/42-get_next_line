@@ -22,7 +22,7 @@ static size_t	find_br(char *s, int index)
 	return (i);
 }
 
-ssize_t	read_line(char **rem, int fd)
+ssize_t	read_line(char **rem, int fd, int index)
 {
 	ssize_t	bytes;
 	char	*buffer;
@@ -33,7 +33,7 @@ ssize_t	read_line(char **rem, int fd)
 	if (bytes > 0)
 	{
 		buffer[bytes] = '\0';
-		line = ft_strjoin(*rem, buffer);
+		line = ft_strjoin(*rem, buffer, index + bytes);
 		free(*rem);
 		*rem = line;
 	}
@@ -74,17 +74,17 @@ char	*get_next_line(int fd)
 	char		*rem;
 	int			index;
 
-	if (fd < 0 || fd > FOPEN_MAX)
+	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE < 1)
 		return (NULL);
 	rem = cache[fd];
 	index = ft_strlen(rem);
 	if (!rem || rem[find_br(rem, 0)] != '\n')
 	{
-		bytes = read_line(&rem, fd);
+		bytes = read_line(&rem, fd, index);
 		while (bytes == BUFFER_SIZE && rem[find_br(rem, index)] != '\n')
 		{
 			index += bytes;
-			bytes = read_line(&rem, fd);
+			bytes = read_line(&rem, fd, index);
 		}
 		if (bytes < 0)
 		{

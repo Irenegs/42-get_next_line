@@ -10,27 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#	include "get_next_line.h"
+#	include "get_next_line_bonus.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2, int size)
 {
-	unsigned int	l1;
-	unsigned int	l2;
+	unsigned int	j;
 	char			*str;
-	size_t			i;
+	unsigned int	i;
 
-	l1 = ft_strlen(s1);
-	l2 = ft_strlen(s2);
-	str = malloc((l1 + l2 + 1) * sizeof(char));
+	str = malloc((size + 1) * sizeof(char));
 	if (!str)
 		return (NULL);
 	i = 0;
-	while (++i < l1 + 1)
-		str[i -1] = s1[i - 1];
-	i = 0;
-	while (++i < l2 + 1)
-		str[l1 + i - 1] = s2[i - 1];
-	str[l1 + l2] = '\0';
+	while (s1 && s1[i] != '\0')
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2 && s2[j] != '\0')
+	{
+		str[i + j] = s2[j];
+		j++;
+	}
+	str[i + j] = '\0';
 	return (str);
 }
 
