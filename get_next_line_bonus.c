@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 17:48:33 by irgonzal          #+#    #+#             */
-/*   Updated: 2023/01/24 13:38:22 by irgonzal         ###   ########.fr       */
+/*   Updated: 2023/04/02 17:55:49 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ ssize_t	read_line(char **rem, int fd, int index)
 		free(*rem);
 		*rem = line;
 	}
+	if (bytes < 0)
+		free(*rem);
 	free(buffer);
 	return (bytes);
 }
@@ -87,10 +89,7 @@ char	*get_next_line(int fd)
 			bytes = read_line(&rem, fd, index);
 		}
 		if (bytes < 0)
-		{
-			free(rem);
 			return (cache[fd] = NULL);
-		}
 	}
 	prepare_line(array, rem);
 	cache[fd] = array[1];
